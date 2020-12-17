@@ -35,6 +35,7 @@ namespace MMR.UI.Forms
         public ItemEditForm ItemEditor { get; private set; }
         public StartingItemEditForm StartingItemEditor { get; private set; }
         public JunkLocationEditForm JunkLocationEditor { get; private set; }
+        public RandomSettingsForm RandomSettingsEditor { get; private set; }
         public HudConfigForm HudConfig { get; private set; }
 
 
@@ -56,6 +57,8 @@ namespace MMR.UI.Forms
 
             JunkLocationEditor = new JunkLocationEditForm();
             UpdateJunkLocationAmountLabel();
+
+            RandomSettingsEditor = new RandomSettingsForm();
 
             LogicEditor = new LogicEditorForm();
             Manual = new ManualForm();
@@ -311,18 +314,7 @@ namespace MMR.UI.Forms
 
         private void bTunic_Click(object sender, EventArgs e)
         {
-            var result = cTunic.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                _isUpdating = true;
 
-                var button = (Button)sender;
-                var form = (TransformationForm)button.Tag;
-                _configuration.CosmeticSettings.TunicColors[form] = cTunic.Color;
-                button.BackColor = cTunic.Color;
-
-                _isUpdating = false;
-            }
         }
 
         private void bopen_Click(object sender, EventArgs e)
@@ -1432,6 +1424,8 @@ namespace MMR.UI.Forms
 
             tJunkLocationsList.Text = _configuration.GameplaySettings.CustomJunkLocationsString;
 
+            tRandomSettingsList.Text = _configuration.GameplaySettings.CustomRandomSettingsString;
+
             HudConfig.Update(_configuration.CosmeticSettings.AsmOptions.HudColorsConfig.Colors);
 
             foreach (var form in Enum.GetValues(typeof(TransformationForm)).Cast<TransformationForm>())
@@ -1522,6 +1516,109 @@ namespace MMR.UI.Forms
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void bRandomSettingsEditor_Click(object sender, EventArgs e)
+        {
+            if (RandomSettingsEditor.ShowDialog() == DialogResult.Cancel)
+            {
+                tRandomSettingsList.Text = RandomSettingsEditor.CustomRandomSettingsString;
+            }
+        }
+
+        private void tRandomSettingsList_TextChanged(object sender, EventArgs e)
+        {
+            RandomSettingsEditor.UpdateChecks(tRandomSettingsList.Text);
+            _configuration.GameplaySettings.CustomRandomSettingsList = RandomSettingsEditor.CustomRandomSettingsList;
+            _configuration.GameplaySettings.CustomRandomSettingsString = RandomSettingsEditor.CustomRandomSettingsString;
+        }
+
+        private void bRandomSettings_Click(object sender, EventArgs e)
+        {
+            Configuration tempConfig = _configuration;
+            Random rnd = new Random();
+            String setting;
+            foreach (int i in RandomSettingsEditor.CustomRandomSettingsList)
+            {
+                setting = RandomSettingsEditor.RANDOM_SETTINGS_POOL[i];
+                switch (setting)
+                {
+                    // Item Pool Options
+                    case "Exclude Song of Soaring": _configuration.GameplaySettings.ExcludeSongOfSoaring = Convert.ToBoolean(rnd.Next(0, 2)); ; break;
+                    case "Dungeon Items": _configuration.GameplaySettings.AddDungeonItems = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Shop Items": _configuration.GameplaySettings.AddShopItems = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Caught bottle contents": _configuration.GameplaySettings.RandomizeBottleCatchContents = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Cow Milk": _configuration.GameplaySettings.AddCowMilk = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Skulltula Tokens": _configuration.GameplaySettings.AddSkulltulaTokens = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Mundane Rewards": _configuration.GameplaySettings.AddMundaneRewards = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Moon Items": _configuration.GameplaySettings.AddMoonItems = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Great Fairy Rewards": _configuration.GameplaySettings.AddFairyRewards = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Everything Else": _configuration.GameplaySettings.AddOther = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Pre-Clocktown Deku Nut": _configuration.GameplaySettings.AddNutChest = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Crazy Starting Items": _configuration.GameplaySettings.CrazyStartingItems = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Stray Fairies": _configuration.GameplaySettings.AddStrayFairies = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    // Other Customizations
+                    case "Dungeon Entrances": _configuration.GameplaySettings.RandomizeDungeonEntrances = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Mix songs with items": _configuration.GameplaySettings.AddSongs = Convert.ToBoolean(rnd.Next(0, 2)); break; // Mix songs with items?????
+                    case "Progressive Upgrades": _configuration.GameplaySettings.ProgressiveUpgrades = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "No Starting Items": _configuration.GameplaySettings.NoStartingItems = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Enemies": _configuration.GameplaySettings.RandomizeEnemies = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    // Gimmicks
+                    case "Damage mode": _configuration.GameplaySettings.DamageMode = (DamageMode)rnd.Next(0, 5); break;
+                    case "Damage effects": _configuration.GameplaySettings.DamageEffect = (DamageEffect)rnd.Next(0, 6); break;
+                    case "Movement": _configuration.GameplaySettings.MovementMode = (MovementMode)rnd.Next(0, 5); break;
+                    case "Floor types": _configuration.GameplaySettings.FloorType = (FloorType)rnd.Next(0, 5); break;
+                    case "Clock speed": _configuration.GameplaySettings.ClockSpeed = (ClockSpeed)rnd.Next(0, 6); break;
+                    case "Blast Mask Cooldown": _configuration.GameplaySettings.BlastMaskCooldown = (BlastMaskCooldown)rnd.Next(0, 6); break;
+                    case "Ice Trap amount": _configuration.GameplaySettings.IceTraps = (IceTraps)rnd.Next(0, 5); break;
+                    case "Ice Trap appearance": _configuration.GameplaySettings.IceTrapAppearance = (IceTrapAppearance)rnd.Next(0, 3); break;
+                    case "Hide Clock UI": _configuration.GameplaySettings.HideClock = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Underwater Ocarina": _configuration.GameplaySettings.OcarinaUnderwater = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Enable Sun's Song": _configuration.GameplaySettings.EnableSunsSong = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Allow Fierce Diety's Mask anywhere": _configuration.GameplaySettings.AllowFierceDeityAnywhere = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "BYO Ammo": _configuration.GameplaySettings.ByoAmmo = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Death is Moon Crash": _configuration.GameplaySettings.DeathMoonCrash = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Continuous Deku Hopping": _configuration.GameplaySettings.ContinuousDekuHopping = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Enable Ice Trap Quirks": _configuration.GameplaySettings.IceTrapQuirks = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    // Speed Ups
+                    case "Skip Younger Beaver": _configuration.GameplaySettings.SpeedupBeavers = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Faster Lab Fish": _configuration.GameplaySettings.SpeedupLabFish = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Faster Bank": _configuration.GameplaySettings.SpeedupBank = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Good Dampe RNG": _configuration.GameplaySettings.SpeedupDampe = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Good Dog Race RNG": _configuration.GameplaySettings.SpeedupDogRace = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    // Comfort Options
+                    case "Disable crit wiggle": _configuration.GameplaySettings.CritWiggleDisable = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Shorten cutscenes": _configuration.GameplaySettings.ShortenCutscenes = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Quick text": _configuration.GameplaySettings.QuickTextEnabled = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Increase push speed": _configuration.GameplaySettings.FastPush = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Close Cows": _configuration.GameplaySettings.CloseCows = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Update shops": _configuration.GameplaySettings.UpdateShopAppearance = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Update chests": _configuration.GameplaySettings.UpdateChests = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Update world models": _configuration.GameplaySettings.UpdateWorldModels = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "No downgrades": _configuration.GameplaySettings.PreventDowngrades = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Fix Epona sword": _configuration.GameplaySettings.FixEponaSword = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Quest item extra storage": _configuration.GameplaySettings.QuestItemStorage = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Arrow cycling": _configuration.GameplaySettings.ArrowCycling = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Elegy speedups": _configuration.GameplaySettings.ElegySpeedup = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    // Hint Distribution
+                    case "Hint Distribution": _configuration.GameplaySettings.GossipHintStyle = (GossipHintStyle)rnd.Next(0, 3); break;
+                    case "Free hints": _configuration.GameplaySettings.FreeHints = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    case "Clear Hints": _configuration.GameplaySettings.ClearHints = Convert.ToBoolean(rnd.Next(0, 2)); break;
+                    // Cosmetic Customization
+                    case "Player Model": _configuration.GameplaySettings.Character = (Character)rnd.Next(0, 4); break;
+                    default: throw new NotImplementedException("Setting Not Found");
+                }
+            }
+            if (cSurpriseRandomSettings.Checked == true)
+            {
+                Randomize();
+                _configuration = tempConfig;
+            }
+            else
+            {
+                UpdateCheckboxes();
+            }
+
         }
     }
 }

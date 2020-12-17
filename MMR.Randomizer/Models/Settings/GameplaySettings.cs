@@ -284,6 +284,17 @@ namespace MMR.Randomizer.Models.Settings
         /// </summary>
         public IceTrapAppearance IceTrapAppearance { get; set; }
 
+        /// <summary>
+        /// List of settings to randomly enable
+        /// </summary>
+        [JsonIgnore]
+        public List<int> CustomRandomSettingsList { get; set; } = new List<int>();
+
+        /// <summary>
+        /// Custom random settings string 
+        /// </summary>
+        public string CustomRandomSettingsString { get; set; }
+
         #endregion
 
         #region Gimmicks

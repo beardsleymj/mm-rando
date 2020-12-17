@@ -150,6 +150,12 @@
     <Compile Include="Forms\ManualForm.Designer.cs">
       <DependentUpon>ManualForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\RandomSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\RandomSettingsForm.designer.cs">
+      <DependentUpon>RandomSettingsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ToggleTricksForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -198,6 +204,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ManualForm.resx">
       <DependentUpon>ManualForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\RandomSettingsForm.resx">
+      <DependentUpon>RandomSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ToggleTricksForm.resx">
       <DependentUpon>ToggleTricksForm.cs</DependentUpon>
